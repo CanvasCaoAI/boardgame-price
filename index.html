@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BGG 桌游榜单</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">BoardGameGeek Rankings</p>
+        <h1>BGG 桌游榜单</h1>
+      </header>
+      <main class="content-card">
+        <div class="toolbar">
+          <label class="search-box" for="keyword">
+            <span>筛选</span>
+            <input
+              id="keyword"
+              type="search"
+              placeholder="输入英文名或中文名"
+              autocomplete="off"
+            />
+          </label>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>排名</th>
+                <th>图片</th>
+                <th>英文名</th>
+                <th>中文名</th>
+                <th>支持人数</th>
+                <th>最佳人数</th>
+                <th>来源</th>
+                <th>价格</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <tr>
+                <td colspan="8" class="placeholder">正在加载数据...</td>
+              </tr>
+            </tbody>
+            <tfoot id="table-foot"></tfoot>
+          </table>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const tableBody = document.getElementById("table-body");
+      const tableFoot = document.getElementById("table-foot");
+      const keywordInput = document.getElementById("keyword");
+      const gameCount = document.getElementById("game-count");
+      const updatedAt = document.getElementById("updated-at");
+      const priceStatus = document.getElementById("price-status");
+
+      const setText = (element, value) => {
+        if (element) {
+          element.textContent = value;
+        }
+      };
+
+      const formatSource = (value) => {
+        const normalized = normalizeSource(value);
+
+        if (value) {
+          let sourceClass = "badge-source";
+
+          if (isPinduoduoSource(value)) {
+            sourceClass = "badge-source-pdd";
+          } else if (normalized === "淘宝" || normalized === "taobao") {
+            sourceClass = "badge-source-taobao";
+          }
+
+          return `<span class="badge ${sourceClass}">${value}</span>`;
+        }
+        return '<span class="badge badge-pending">待确认</span>';
+      };
+
+      const formatPrice = (value) => {
+        if (typeof value === "number") {
+          return `￥${value.toFixed(0)}`;
+        }
+        if (typeof value === "string") {
+          return value;
+        }
+        return '<span class="text-muted">待补充</span>';
+      };
+
+      const formatSupportedPlayers = (game) => {
+        if (
+          typeof game.minPlayers === "number" &&
+          typeof game.maxPlayers === "number"
+        ) {
+          if (game.minPlayers === game.maxPlayers) {
+            return `${game.minPlayers} 人`;
+          }
+
+          return `${game.minPlayers}-${game.maxPlayers} 人`;
+        }
+
+        return '<span class="text-muted">待补充</span>';
+      };
+
+      const formatBestPlayers = (value) => {
+        if (typeof value === "string" && value.trim()) {
+          return `${value} 人`;
+        }
+
+        return '<span class="text-muted">待补充</span>';
+      };
+
+      const formatChineseName = (value) => {
+        if (typeof value === "string" && value.trim()) {
+          return value;
+        }
+
+        return '<span class="text-muted">待补充</span>';
+      };
+
+      const formatImage = (game) => {
+        if (typeof game.image === "string" && game.image) {
+          const previewImage = game.imageLarge || game.image;
+
+          return `
+            <div class="game-cover-wrap">
+              <img
+                class="game-cover"
+                src="${game.image}"
+                alt="${game.nameEn}"
+                loading="lazy"
+                decoding="async"
+              >
+              <div class="game-cover-preview" aria-hidden="true">
+                <img
+                  class="game-cover-preview-image"
+                  src="${previewImage}"
+                  alt="${game.nameEn}"
+                  loading="lazy"
+                  decoding="async"
+                >
+                <span class="game-cover-preview-label">${game.nameEn}</span>
+              </div>
+            </div>
+          `;
+        }
+
+        return '<span class="text-muted">暂无</span>';
+      };
+
+      const normalizeSource = (value) => {
+        if (typeof value !== "string") {
+          return "";
+        }
+
+        return value.trim().toLowerCase();
+      };
+
+      const isPinduoduoSource = (value) => {
+        const normalized = normalizeSource(value);
+        return (
+          normalized === "拼多多" ||
+          normalized === "pinduoduo" ||
+          normalized === "pingduoduo"
+        );
+      };
+
+      const sumNumericPrices = (games) =>
+        games.reduce((total, game) => {
+          return typeof game.price === "number" ? total + game.price : total;
+        }, 0);
+
+      const mergeRankingsWithGames = (rankings, gamesById) =>
+        rankings
+          .map((entry) => {
+            const game = gamesById[String(entry.bggId)];
+
+            if (!game) {
+              return null;
+            }
+
+            return {
+              bggId: entry.bggId,
+              rank: entry.rank,
+              ...game,
+            };
+          })
+          .filter(Boolean);
+
+      const renderSummaryRows = (games) => {
+        const pinduoduoTotal = sumNumericPrices(
+          games.filter((game) => isPinduoduoSource(game.source))
+        );
+        const allGamesTotal = sumNumericPrices(games);
+
+        tableFoot.innerHTML = `
+          <tr class="summary-row">
+            <td colspan="7">拼多多总价（仅统计数字价格）</td>
+            <td>${formatPrice(pinduoduoTotal)}</td>
+          </tr>
+          <tr class="summary-row">
+            <td colspan="7">全部桌游总价（仅统计数字价格）</td>
+            <td>${formatPrice(allGamesTotal)}</td>
+          </tr>
+        `;
+      };
+
+      const renderRows = (games) => {
+        if (!games.length) {
+          tableBody.innerHTML =
+            '<tr><td colspan="8" class="placeholder">没有匹配到结果</td></tr>';
+          return;
+        }
+
+        tableBody.innerHTML = games
+          .map(
+            (game) => `
+              <tr>
+                <td class="rank-cell">${game.rank}</td>
+                <td class="image-cell">${formatImage(game)}</td>
+                <td>${game.nameEn}</td>
+                <td>${formatChineseName(game.nameZh)}</td>
+                <td class="players-cell">${formatSupportedPlayers(game)}</td>
+                <td class="players-cell">${formatBestPlayers(game.bestPlayers)}</td>
+                <td>${formatSource(game.source)}</td>
+                <td>${formatPrice(game.price)}</td>
+              </tr>
+            `
+          )
+          .join("");
+      };
+
+      Promise.all([
+        fetch("./data/bgg-rankings.json").then((response) =>
+          response.json()
+        ),
+        fetch("./data/bgg-games.json").then((response) => response.json()),
+      ])
+        .then(([rankingsPayload, gamesPayload]) => {
+          const games = mergeRankingsWithGames(
+            rankingsPayload.rankings,
+            gamesPayload.games
+          );
+          const pendingPrices = games.filter((game) => game.price == null).length;
+
+          setText(gameCount, `${games.length} 款`);
+          setText(updatedAt, rankingsPayload.updatedAt);
+          setText(
+            priceStatus,
+            pendingPrices === 0 ? "已补齐" : `${pendingPrices} 项待补充`
+          );
+
+          renderRows(games);
+          renderSummaryRows(games);
+
+          if (keywordInput) {
+            keywordInput.addEventListener("input", (event) => {
+              const keyword = event.target.value.trim().toLowerCase();
+              const filteredGames = games.filter((game) => {
+                const english = game.nameEn.toLowerCase();
+                const chinese = (game.nameZh || "").toLowerCase();
+                return english.includes(keyword) || chinese.includes(keyword);
+              });
+
+              renderRows(filteredGames);
+            });
+          }
+        })
+        .catch(() => {
+          setText(gameCount, "--");
+          setText(updatedAt, "--");
+          setText(priceStatus, "加载失败");
+          tableFoot.innerHTML = "";
+          tableBody.innerHTML =
+            '<tr><td colspan="8" class="placeholder">读取 JSON 失败，请用本地静态服务器打开页面。</td></tr>';
+        });
+    </script>
+  </body>
+</html>
