@@ -219,7 +219,13 @@
         tableBody.innerHTML = games
           .map(
             (game) => `
-              <tr>
+              <tr
+                class="game-row"
+                data-bgg-id="${game.bggId}"
+                tabindex="0"
+                role="link"
+                aria-label="在 BoardGameGeek 打开 ${game.nameEn}"
+              >
                 <td class="rank-cell">${game.rank}</td>
                 <td class="image-cell">${formatImage(game)}</td>
                 <td>${game.nameEn}</td>
@@ -233,6 +239,38 @@
           )
           .join("");
       };
+
+      const openBggGame = (row) => {
+        const bggId = row.dataset.bggId;
+
+        if (bggId) {
+          window.open(
+            `https://boardgamegeek.com/boardgame/${bggId}`,
+            "_blank",
+            "noopener,noreferrer"
+          );
+        }
+      };
+
+      tableBody.addEventListener("click", (event) => {
+        const row = event.target.closest(".game-row");
+
+        if (row) {
+          openBggGame(row);
+        }
+      });
+
+      tableBody.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") {
+          return;
+        }
+
+        const row = event.target.closest(".game-row");
+        if (row) {
+          event.preventDefault();
+          openBggGame(row);
+        }
+      });
 
       Promise.all([
         fetch("./data/bgg-rankings.json").then((response) =>
