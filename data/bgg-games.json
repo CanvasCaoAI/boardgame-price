@@ -1,6 +1,6 @@
 {
   "source": "BoardGameGeek Rankings",
-  "updatedAt": "2026-09-07",
+  "updatedAt": "2026-11-16",
   "games": {
     "224517": {
       "nameEn": "Brass: Birmingham",
@@ -1059,7 +1059,7 @@
       "bestPlayers": "4"
     },
     "277659": {
-      "nameEn": "Final Girl",
+      "nameEn": "Final Girl Core Box",
       "nameZh": "最终女孩",
       "source": "淘宝",
       "price": 188,
@@ -2201,6 +2201,28 @@
       "minPlayers": 1,
       "maxPlayers": 4,
       "bestPlayers": "3"
+    },
+    "375459": {
+      "nameEn": "Speakeasy",
+      "nameZh": null,
+      "source": "拼多多",
+      "price": null,
+      "image": "https://cf.geekdo-images.com/Y7vIlh-m_Ugnv0jrUuOW3g__micro/img/1xpW5kUdG91z7DK_wdJsgq2FVME=/fit-in/64x64/filters:strip_icc()/pic8165052.jpg",
+      "imageLarge": "https://cf.geekdo-images.com/Y7vIlh-m_Ugnv0jrUuOW3g__itemrep/img/sX2hD1VRmIUjSjs_MpZdrDBgEWg=/fit-in/246x300/filters:strip_icc()/pic8165052.jpg",
+      "minPlayers": 1,
+      "maxPlayers": 4,
+      "bestPlayers": "3"
+    },
+    "416851": {
+      "nameEn": "Castle Combo",
+      "nameZh": null,
+      "source": "拼多多",
+      "price": null,
+      "image": "https://cf.geekdo-images.com/rGomBfj0FGrZM-w3h5HFWQ__micro/img/iTK40-kc4BOaJVi6UvjFa09d6n0=/fit-in/64x64/filters:strip_icc()/pic8250341.png",
+      "imageLarge": "https://cf.geekdo-images.com/rGomBfj0FGrZM-w3h5HFWQ__itemrep/img/K4E240yoCYBHiQPBQMSblVs4FUg=/fit-in/246x300/filters:strip_icc()/pic8250341.png",
+      "minPlayers": 2,
+      "maxPlayers": 5,
+      "bestPlayers": "2"
     }
   }
 }
