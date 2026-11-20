@@ -31,7 +31,7 @@ body {
 }
 
 .page-shell {
-  width: min(1200px, calc(100% - 32px));
+  width: min(1680px, calc(100% - 32px));
   margin: 0 auto;
   padding: 48px 0 56px;
 }
@@ -129,7 +129,7 @@ body {
 }
 
 .table-wrap {
-  overflow: auto;
+  overflow: visible;
   border: 1px solid var(--line);
   border-radius: 22px;
   background: rgba(255, 253, 248, 0.88);
@@ -138,7 +138,6 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1180px;
 }
 
 thead th {
@@ -151,6 +150,26 @@ thead th {
   letter-spacing: 0.03em;
   color: #f7f6f0;
   background: linear-gradient(135deg, var(--brand), #1f403f);
+}
+
+.sort-button {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+.sort-button:hover,
+.sort-button[aria-pressed="true"] {
+  color: #ffe0b8;
+}
+
+.sort-button:focus-visible {
+  outline: 2px solid #ffe0b8;
+  outline-offset: 4px;
 }
 
 tbody tr {
@@ -180,6 +199,12 @@ tbody td {
   padding: 15px 18px;
   border-top: 1px solid var(--line);
   vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+th:last-child,
+td:last-child {
+  white-space: nowrap;
 }
 
 tfoot td {
@@ -254,6 +279,10 @@ tfoot td {
 }
 
 .players-cell {
+  white-space: nowrap;
+}
+
+.year-cell {
   white-space: nowrap;
 }
 
