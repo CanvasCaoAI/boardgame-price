@@ -199,7 +199,8 @@ tbody td {
   padding: 15px 18px;
   border-top: 1px solid var(--line);
   vertical-align: middle;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 th:last-child,
@@ -359,5 +360,211 @@ tfoot td {
 
   .game-cover-preview {
     display: none;
+  }
+}
+
+/* Keep table columns readable before switching to the compact card layout. */
+.mobile-sort {
+  display: none;
+}
+
+thead th {
+  white-space: nowrap;
+}
+
+.name-en-cell,
+.name-zh-cell {
+  min-width: 150px;
+  line-height: 1.5;
+}
+
+@media (min-width: 1101px) {
+  tbody td,
+  thead th {
+    padding-left: clamp(10px, 1.1vw, 18px);
+    padding-right: clamp(10px, 1.1vw, 18px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .page-shell {
+    width: calc(100% - 24px);
+    padding: 16px 0 32px;
+  }
+
+  .hero {
+    padding: 24px;
+    border-radius: 20px;
+  }
+
+  .hero h1 {
+    font-size: clamp(1.8rem, 6vw, 2.6rem);
+    line-height: 1.2;
+  }
+
+  .content-card {
+    padding: 16px;
+    margin-top: 16px;
+    border-radius: 20px;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .search-box input {
+    font-size: 16px;
+  }
+
+  .mobile-sort {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .mobile-sort .sort-button {
+    min-height: 44px;
+    padding: 10px 14px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface-strong);
+    color: var(--brand);
+  }
+
+  .mobile-sort .sort-button[aria-pressed="true"] {
+    background: var(--brand);
+    color: #fff;
+  }
+
+  .mobile-sort .sort-button:focus-visible {
+    outline-color: var(--brand);
+  }
+
+  .table-wrap {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  table,
+  tbody,
+  tfoot {
+    display: block;
+    width: 100%;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody {
+    display: grid;
+    gap: 14px;
+  }
+
+  tbody .game-row {
+    display: grid;
+    grid-template-columns: 64px repeat(5, minmax(0, 1fr));
+    grid-template-areas:
+      "rank rank rank rank rank rank"
+      "image chinese chinese chinese chinese chinese"
+      "image english english english english english"
+      "year year players players best best"
+      "source source source price price price";
+    gap: 8px 12px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface-strong);
+  }
+
+  tbody td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    white-space: normal;
+    line-height: 1.5;
+  }
+
+  .rank-cell { grid-area: rank; font-size: 0.85rem; }
+  .rank-cell::before { content: "排名 #"; }
+  .image-cell { grid-area: image; width: auto; }
+  .name-zh-cell { grid-area: chinese; font-size: 1.1rem; font-weight: 700; }
+  .name-en-cell { grid-area: english; color: var(--muted); font-size: 0.9rem; }
+  .year-cell { grid-area: year; }
+  .supported-cell { grid-area: players; }
+  .best-cell { grid-area: best; }
+  .source-cell { grid-area: source; }
+  .price-cell { grid-area: price; font-weight: 700; color: var(--brand); }
+
+  .name-en-cell,
+  .name-zh-cell {
+    overflow-wrap: break-word;
+  }
+
+  tbody td[data-label] {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 3px;
+    margin-top: 8px;
+  }
+
+  tbody td.source-cell,
+  tbody td.price-cell {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+  }
+
+  tbody td.price-cell {
+    justify-content: flex-end;
+  }
+
+  tbody td[data-label]::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 400;
+  }
+
+  .game-cover {
+    width: 64px;
+    height: 64px;
+  }
+
+  .game-cover-preview { display: none; }
+
+  tbody tr:has(.placeholder) { display: block; }
+
+  tfoot {
+    margin-top: 16px;
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    margin-top: 8px;
+  }
+
+  .summary-row td {
+    display: block;
+    padding: 0;
+    border: 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
   }
 }

@@ -25,6 +25,12 @@
           </label>
         </div>
 
+        <div class="mobile-sort" aria-label="榜单排序">
+          <span>排序</span>
+          <button class="sort-button" type="button" data-sort-key="rank" data-label="排名" aria-pressed="true">排名 ↑</button>
+          <button class="sort-button" type="button" data-sort-key="yearPublished" data-label="出品年份" aria-pressed="false">出品年份</button>
+        </div>
+
         <div class="table-wrap">
           <table>
             <thead>
@@ -291,13 +297,13 @@
               >
                 <td class="rank-cell">${game.rank}</td>
                 <td class="image-cell">${formatImage(game)}</td>
-                <td>${game.nameEn}</td>
-                <td>${formatChineseName(game.nameZh)}</td>
-                <td class="year-cell">${formatYearPublished(game.yearPublished)}</td>
-                <td class="players-cell">${formatSupportedPlayers(game)}</td>
-                <td class="players-cell">${formatBestPlayers(game.bestPlayers)}</td>
-                <td>${formatSource(game.source)}</td>
-                <td>${formatPrice(game.price)}</td>
+                <td class="name-en-cell">${game.nameEn}</td>
+                <td class="name-zh-cell">${formatChineseName(game.nameZh)}</td>
+                <td class="year-cell" data-label="出品年份">${formatYearPublished(game.yearPublished)}</td>
+                <td class="players-cell supported-cell" data-label="支持人数">${formatSupportedPlayers(game)}</td>
+                <td class="players-cell best-cell" data-label="最佳人数">${formatBestPlayers(game.bestPlayers)}</td>
+                <td class="source-cell" data-label="来源">${formatSource(game.source)}</td>
+                <td class="price-cell" data-label="价格">${formatPrice(game.price)}</td>
               </tr>
             `
           )
